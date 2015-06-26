@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="js/firebase.js"></script>
+    <script>
+        var i = 0;
+        var maxlines = 8;
+
+        var dataRef = new Firebase("https://chat-popup.firebaseIO.com/rooms");
+
+        var myRoomRef = dataRef.push();
+
+        window.setInterval(function () {
+            var chat = document.getElementById("chat");
+            if (i == 0) {
+                chat.innerHTML += "<p style='color:blue'>Vanessa: Hey are you in <i>Antwerp Area</i>?</p>";
+            }
+            else if (i == 1) {
+                chat.innerHTML += "<p style='color:blue'>Vanessa: We should totally go to the <i>Undefined Party</i>!!</p>";
+            }
+            else if (i == 2) {
+                chat.innerHTML += "<p style='color:blue'>Vanessa: Hey <b>you still interested?</b></p>";
+            }
+            else if (i == 3) {
+                chat.innerHTML += "<p style='color:blue'>Vanessa: let's have a good time!!</p>";
+            }
+            else if (i == 4) {
+                chat.innerHTML += "<p style='color:blue'>Vanessa: I've heard there are some hot boys there?! <i>MEOW meow!?!?</i></p>";
+            }
+            else if (i == 5) {
+                chat.innerHTML += "<p style='color:purple'>Robbie: Vanessa what are you doing? </p>";
+            }
+            else if (i == 6) {
+                chat.innerHTML += "<p style='color:blue'>Vanessa:....</p>";
+            }
+            else if (i == 7) {
+                chat.innerHTML += "<p style='color:purple'>Robbie: I thought we were going together? </p>";
+            }
+            else if (i == 8) {
+                chat.innerHTML += "<p style='color:blue'>Vanessa: <b>shut up loser!</p></p>";
+            }
+            chat.scrollTop = chat.scrollHeight;
+            i = i + 1;
+            if (i > maxlines) i = 0;
+        }, Math.floor( Math.random() * 10 ) * 1000);
+
+        function addNewText(origin) {
+            myRoomRef.push({origin: 0, text: document.getElementById("chattext").value, time: new Date().valueOf()});
+        }
+
+        function handleKeyPress(e, form) {
+            var key = e.keyCode || e.which;
+            if (key == 13) {
+                addNewText(0);
+            }
+        }
+
+        myRoomRef.on('child_added', function (snapshot) {
+            var message = snapshot.val();
+            console.log(message);
+            var chat = document.getElementById("chat");
+
+            if (message.origin == 0) {
+                var myColor = "red";
+                var name = "You: ";
+                document.getElementById("chattext").value = "";
+            }
+            else {
+                var myColor = "blue";
+                var name = "Vanessa: ";
+            }
+            chat.innerHTML += "<p style='color:" + myColor + "'>" + name + message.text + "</p>";
+            chat.scrollTop = chat.scrollHeight;
+        });
+
+
+        // Chartbeat
+        var _sf_async_config = {uid: 39592, domain: "weareundefined.be"};
+        (function () {
+            function e() {
+                window._sf_endpt = (new Date).getTime();
+                var e = document.createElement("script");
+                e.setAttribute("language", "javascript");
+                e.setAttribute("type", "text/javascript");
+                e.setAttribute("src", "//static.chartbeat.com/js/chartbeat.js");
+                document.body.appendChild(e)
+            }
+
+            var t = window.onload;
+            window.onload = typeof window.onload != "function" ? e : function () {
+                t();
+                e()
+            }
+        })()
+
+    </script>
+</head>
+<body>
+<div id="chat-popup">
+
+    <div style="width:308px;height:30px;background-color:#22629E;color:white;font-size:15px;line-height:30px;padding: 6px">
+        <b> Chat with local Hot girls
+            <a onclick="document.getElementById('chat-popup').style.display='none';" href="#"
+               style="color:white;font-weight:bold;margin-right:5px; float:right;text-decoration: none">✖</a>
+        </b>
+    </div>
+
+    <div style="width:320px;height:500px;overflow:hidden;background-color:#f0f0f0">
+        <img width="320" src="img/img_102.jpg">
+
+        <div id="chat"
+             style="width:314px;height:175px;margin-left:2px;margin-top:2px;resize:none;background:white;overflow:scroll;border: 1px solid #CCC;-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);-webkit-transition: border linear 0.2s, box-shadow linear 0.2s;-moz-transition: border linear 0.2s, box-shadow linear 0.2s;-o-transition: border linear 0.2s, box-shadow linear 0.2s;transition: border linear 0.2s, box-shadow linear 0.2s;margin-bottom:5px;">
+        </div>
+        <input id="chattext" type="text" style="margin-left:2px;width:242px;"
+               onkeypress="handleKeyPress(event,this.form)">
+        <button onclick="addNewText()" style="margin-top:-10px;" class="btn">Send</button>
+    </div>
+
+</div>
+
+
+</body>
+</html>
